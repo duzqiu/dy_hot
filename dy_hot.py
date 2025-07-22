@@ -1,5 +1,6 @@
 import requests
 from settings import *
+from bark_send import SendBark
 
 # 获取热榜数据
 class DyHot:
@@ -37,31 +38,13 @@ class BarkText:
         self.dy_hot = DyHot(params)
 
     def get_rise_bark(self):
-        rise = dy_hot.get_rise()
-        title = f"实时上升热点 {rise[0]}"
-        content = f"""
-{rise[1][0]}
-{rise[1][1]}
-{rise[1][2]}
-{rise[1][3]}
-{rise[1][4]}
-        """
-        return title,content
+        rise = self.dy_hot.get_rise()
+        title = f"抖音实时上升热点 {rise[0]}"
+        content = "\n✅ " + "\n\n✅ ".join(rise[1])  # 一共5条
+        return title, content
     
     def get_hot_bark(self):
-        hot = dy_hot.get_hot_list()
-        title = f"{self.params[1]} {hot[0]}"
-        return title
-    
-
-
-
-dy_hot = DyHot(HOT_PARAMS)
-rise = dy_hot.get_rise()
-print(rise)
-hot = dy_hot.get_hot_list()
-print(hot)
-
-bark_text = BarkText(HOT_PARAMS)
-print(bark_text.get_rise_bark())
-
+        hot = self.dy_hot.get_hot_list()
+        title = f"抖音{self.params[1]} {hot[0]}"
+        content = "\n✅ " + "\n\n✅ ".join(hot[1][0:30])  # 只取前30条,bark超过30条不发送
+        return title, content
